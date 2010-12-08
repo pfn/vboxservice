@@ -1,0 +1,10 @@
+1) Set VM to auto-start
+   > vboxmanage setextradata VM_Name Service yes
+
+2) Set the system profile to reference your user's VirtualBox config
+   > cd C:\Windows\system32\config\systemprofile
+   > mklink /j .VirtualBox C:\Users\USERNAME\.VirtualBox
+
+TODOs:
+
+1) Set a value on the VM to indicate startup/shutdown order
