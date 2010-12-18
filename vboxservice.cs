@@ -140,10 +140,16 @@ namespace HanHuy.VBoxService {
 
 		private void ProcessVMs(MachineState[] states, VMAction action) {
 			var s = new HashSet<MachineState>(states);
+			var allnames = (from m in Machines select m.Name).ToArray();
+			EventLog.WriteEntry(String.Format(
+					"Available VMs: {0}", String.Join(", ", allnames)));
 			var machines = from m in Machines
 					where m.GetExtraData(EXTRADATA_KEY).ToLower() == "yes" &&
 						s.Contains(m.State)
 					select m;
+			var selnames = (from m in machines select m.Name).ToArray();
+			EventLog.WriteEntry(String.Format(
+					"Selected VMs: {0}", String.Join(", ", selnames)));
 			foreach (var m in machines) action(m);
 		}
 
