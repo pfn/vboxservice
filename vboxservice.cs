@@ -108,8 +108,9 @@ namespace HanHuy.VBoxService {
 				var session = new Session();
 				EventLog.WriteEntry("Starting VM: " + m.Name);
 				try {
-					var p = vb.OpenRemoteSession(session, m.Id, "vrdp", "");
+                    var p = m.LaunchVMProcess(session, "vrdp", "");
 					WaitForCompletion(p, true);
+                    session.UnlockMachine();
 				} catch (Exception e) {
 					EventLog.WriteEntry(String.Format(
 							"Error starting VM {0}\r\n{1}",
@@ -126,9 +127,10 @@ namespace HanHuy.VBoxService {
 				var session = new Session();
 				EventLog.WriteEntry("Stopping VM: " + m.Name);
 				try {
-					vb.OpenExistingSession(session, m.Id);
+                    m.LockMachine(session, LockType.LockType_Shared);
 					WaitForCompletion(
 							session.Console.SaveState(), requestTime);
+                    session.UnlockMachine();
 				} catch (Exception e) {
 					EventLog.WriteEntry(String.Format(
 							"Error saving VM {0}\r\n{1}",
