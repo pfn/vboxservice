@@ -32,7 +32,7 @@ namespace HanHuy.VBoxService {
 			var serviceInstalled = false;
 
 			try {
-				status           = c.Status; // invalid op if not installed
+				status	   = c.Status; // invalid op if not installed
 				serviceInstalled = true;
 			} catch (InvalidOperationException) { }
 			c.Close();
@@ -50,7 +50,7 @@ namespace HanHuy.VBoxService {
 				var m = new MainClass();
 				try {
 					// prevents startup if vbox is not available
-				    m.Init();
+					m.Init();
 				} catch {
 					m.EventLog.WriteEntry("Unable to load VBox COM object",
 							EventLogEntryType.Error);
@@ -93,7 +93,7 @@ namespace HanHuy.VBoxService {
 		}
 
 		private void Init() {
-		    vb          = new VirtualBox.VirtualBox();
+			vb	  = new VirtualBox.VirtualBox();
 			ServiceName = SERVICE_NAME;
 			CanShutdown = true;
 			CanStop     = true;
@@ -130,7 +130,7 @@ namespace HanHuy.VBoxService {
 					m.LockMachine(session, LockType.LockType_Shared);
 					WaitForCompletion(
 							session.Console.SaveState(), requestTime);
-					session.UnlockMachine();
+					//session.UnlockMachine(); // unlocked by SaveState
 				} catch (Exception e) {
 					EventLog.WriteEntry(String.Format(
 							"Error saving VM {0}\r\n{1}",
@@ -172,13 +172,18 @@ namespace HanHuy.VBoxService {
 		}
 
 		protected override void OnStart(string[] args) {
+			EventLog.WriteEntry("Service Starting");
 			StartVMs();
 		}
 		protected override void OnStop() {
+			EventLog.WriteEntry("Service Stopping");
 			StopVMs(true);
 		}
 		protected override void OnShutdown() {
-			StopVMs(false);
+			// EventLog not writable while the service is shutting down?
+			EventLog.WriteEntry("System Shutting Down");
+			//StopVMs(false);
+			Stop(); // OnStop is called implicitly?
 		}
 	}
 	
