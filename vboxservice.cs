@@ -93,6 +93,9 @@ namespace HanHuy.VBoxService {
 		}
 
 		private void Init() {
+			EventLog.CreateEventSource("vboxservice", "Application");
+			EventLog.Log = "Application";
+			EventLog.Source = "vboxservice";
 			vb	  = new VirtualBox.VirtualBox();
 			ServiceName = SERVICE_NAME;
 			CanShutdown = true;
